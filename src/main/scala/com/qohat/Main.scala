@@ -1,9 +1,13 @@
 package com.qohat
 
-import cats.effect.{ExitCode, IO, IOApp}
-import cats.implicits._
+import cats.effect._
+import org.http4s.HttpRoutes
+import org.http4s.dsl.io._
+import org.http4s.implicits._
 
-object Main extends IOApp {
-  def run(args: List[String]) =
-    Http4sapiServer.stream[IO].compile.drain.as(ExitCode.Success)
+object Main {
+  val helloWorldService = HttpRoutes.of[IO]{
+    case GET -> Root / "hello" / name =>
+      Ok(s"Hello, $name.")
+  }.orNotFound
 }
